@@ -30,15 +30,38 @@ public class UserEntity extends FormEntity{
     Date dob;
     String address;
 
-    @ManyToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user1", fetch = FetchType.LAZY, cascade = CascadeType.ALL,  orphanRemoval = true)
+    Set<FriendshipEntity> sendFriendRequests;
+
+    @OneToMany(mappedBy = "user2", fetch = FetchType.LAZY, cascade = CascadeType.ALL,  orphanRemoval = true)
+    Set<FriendshipEntity> receiveFriendRequests;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL,  orphanRemoval = true)
+    Set<PostEntity> posts;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    Set<CommentEntity> comments;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    Set<MessageEntity> messages;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    Set<RefreshTokenEntity> refreshTokens;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    Set<PostReactionEntity> postReactions;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    Set<MessageReactionEntity> messageReactions;
+
+    @ManyToMany(mappedBy = "users")
     Set<RoleEntity> roles;
+
+    @ManyToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    Set<GroupEntity> groups;
+
+    @ManyToMany(mappedBy = "taggedUsers", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    Set<CommentEntity> commentTags;
 }
 
-//n - n User
-//1 - n Post
-//n - n Post (like, comment)
-//1 - n Comment
-//n - n Comment(like, comment)
-//1 - n Message
-//n -n Group
 

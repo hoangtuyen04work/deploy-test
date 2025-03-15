@@ -6,6 +6,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -15,6 +16,10 @@ import java.time.LocalDate;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @EntityListeners(AuditingEntityListener.class)
 public class RefreshTokenEntity extends FormEntity{
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    UserEntity user;
 
     @Column(nullable = false)
     String refreshToken;

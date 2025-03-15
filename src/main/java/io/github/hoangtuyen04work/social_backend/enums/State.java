@@ -1,4 +1,4 @@
-package io.github.hoangtuyen04work.social_backend.entities;
+package io.github.hoangtuyen04work.social_backend.enums;
 
 public enum State {
     CREATED,

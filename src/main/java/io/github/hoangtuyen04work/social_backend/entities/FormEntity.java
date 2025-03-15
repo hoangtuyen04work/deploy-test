@@ -1,6 +1,7 @@
 package io.github.hoangtuyen04work.social_backend.entities;
 
 
+import io.github.hoangtuyen04work.social_backend.enums.State;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
