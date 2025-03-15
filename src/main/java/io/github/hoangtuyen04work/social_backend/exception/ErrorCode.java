@@ -14,10 +14,11 @@ public enum ErrorCode{
     WRONG_PASSWORD_OR_USERID(400, "Wrong password or userid", HttpStatus.BAD_REQUEST),
     NOT_AUTHENTICATION(401, "Not authentication", HttpStatus.UNAUTHORIZED),
     NOT_AUTHORIZATION(403, "Not authorization", HttpStatus.FORBIDDEN);
+    @Getter
     int status;
     String message;
     HttpStatus httpStatus;
-    public int getStatus() {return status;}
+
     ErrorCode(int status, String message,HttpStatus httpStatus){
         this.status = status;
         this.message = message;
