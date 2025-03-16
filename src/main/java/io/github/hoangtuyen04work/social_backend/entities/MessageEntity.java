@@ -4,6 +4,7 @@ import io.github.hoangtuyen04work.social_backend.enums.Reaction;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+@Builder
 
 @Entity
 @Getter
