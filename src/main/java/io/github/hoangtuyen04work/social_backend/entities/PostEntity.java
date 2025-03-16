@@ -11,8 +11,8 @@ import java.util.Set;
 @Getter
 @Setter
 @RequiredArgsConstructor
-@NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Table(name = "post")
 public class PostEntity extends FormEntity{
     String content;
     String imageLink;

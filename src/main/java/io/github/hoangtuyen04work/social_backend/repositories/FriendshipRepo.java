@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface FriendshipRepo extends JpaRepository<String, FriendshipEntity> {
+public interface FriendshipRepo extends JpaRepository<FriendshipEntity, String> {
 }

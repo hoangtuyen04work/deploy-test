@@ -10,15 +10,14 @@ import java.util.Set;
 @Getter
 @Setter
 @RequiredArgsConstructor
-@NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Table(name = "groups")
+@Table(name = "groupss")
 public class GroupEntity extends FormEntity {
     @Column(nullable = false)
     String name;
     String imageLink;
 
-    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     Set<MessageEntity> messages;
 
     @ManyToMany

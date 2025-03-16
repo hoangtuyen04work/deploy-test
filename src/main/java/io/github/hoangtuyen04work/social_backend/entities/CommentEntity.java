@@ -11,7 +11,6 @@ import java.util.List;
 @Getter
 @Setter
 @RequiredArgsConstructor
-@NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "comments")
 public class CommentEntity extends FormEntity{
@@ -25,6 +24,10 @@ public class CommentEntity extends FormEntity{
     List<CommentEntity> replies;
 
     @ManyToOne
+    @JoinColumn(name = "post_id")
+    PostEntity post;
+
+    @ManyToOne
     @JoinColumn(name = "parent_id")
     CommentEntity parent;
 
@@ -35,4 +38,8 @@ public class CommentEntity extends FormEntity{
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     List<UserEntity> taggedUsers;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    UserEntity user;
 }
