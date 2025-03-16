@@ -14,13 +14,14 @@ import java.util.Set;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "roles")
+@Builder
 public class RoleEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     String id;
     String roleName;
 
-    @OneToMany(mappedBy = "role")
+    @ManyToMany(mappedBy = "roles")
     Set<Authority> authorities;
 
     @ManyToMany

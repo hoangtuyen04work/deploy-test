@@ -6,7 +6,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.util.Set;
-
+@Builder
 @Entity
 @Getter
 @Setter
