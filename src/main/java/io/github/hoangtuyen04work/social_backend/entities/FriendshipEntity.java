@@ -9,8 +9,8 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @Setter
 @RequiredArgsConstructor
-@NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Table(name = "friendship")
 public class FriendshipEntity extends FormEntity{
     @ManyToOne
     @JoinColumn(name = "user1", nullable = false)

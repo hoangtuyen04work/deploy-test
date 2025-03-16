@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface RefreshTokenRepo extends JpaRepository<String, RefreshTokenEntity> {
+public interface RefreshTokenRepo extends JpaRepository<RefreshTokenEntity, String> {
 }

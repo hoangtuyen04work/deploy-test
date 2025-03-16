@@ -9,8 +9,8 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @Setter
 @RequiredArgsConstructor
-@NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Table(name = "message_reaction")
 public class MessageReactionEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

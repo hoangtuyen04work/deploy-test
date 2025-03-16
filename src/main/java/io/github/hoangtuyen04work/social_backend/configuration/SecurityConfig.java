@@ -27,7 +27,7 @@ import javax.crypto.spec.SecretKeySpec;
 @EnableWebSecurity
 @EnableJpaAuditing
 public class SecurityConfig  {
-    private String SIGNED_KEY;
+    private String SIGNED_KEY = "asdsfsd";
     @Autowired
     CustomJwtDecoder customJwtDecoder;
     @Autowired
