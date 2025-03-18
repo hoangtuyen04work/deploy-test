@@ -5,25 +5,26 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDate;
-import java.util.Set;
+import java.util.Date;
+
 @Builder
 @Entity
 @Getter
 @Setter
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "resfresh_token")
 public class RefreshTokenEntity extends FormEntity{
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
+    @OneToOne
+    @JoinColumn(name = "user_id", unique = true, nullable = false)
     UserEntity user;
 
     @Column(nullable = false)
     String refreshToken;
 
     @Column(nullable = false)
-    LocalDate expirationTime;
+    Date expirationTime;
 }

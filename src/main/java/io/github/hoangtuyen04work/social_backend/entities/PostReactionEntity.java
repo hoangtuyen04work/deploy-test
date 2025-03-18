@@ -8,7 +8,8 @@ import lombok.experimental.FieldDefaults;
 @Entity
 @Getter
 @Setter
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "post_reaction")
 public class PostReactionEntity {

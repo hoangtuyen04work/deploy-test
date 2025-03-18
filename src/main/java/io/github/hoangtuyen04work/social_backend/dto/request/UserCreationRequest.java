@@ -5,13 +5,12 @@ import lombok.experimental.FieldDefaults;
 
 import java.util.Date;
 
-@Builder
 @Getter
 @Setter
-@AllArgsConstructor
+@RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserCreationRequest {
-    String userId;
+    String customId;
     String userName;
     String password;
     String email;

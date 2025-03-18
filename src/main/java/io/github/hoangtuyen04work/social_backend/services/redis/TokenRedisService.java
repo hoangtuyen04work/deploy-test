@@ -3,8 +3,6 @@ package io.github.hoangtuyen04work.social_backend.services.redis;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.hoangtuyen04work.social_backend.exception.AppException;
-import io.github.hoangtuyen04work.social_backend.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -20,15 +18,16 @@ public class TokenRedisService {
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
 
-    public void saveToken(String id, String token) throws JsonProcessingException {
+    public void saveToken(String id, String token) {
         String key = "access_token:" + id;
-        String json = objectMapper.writeValueAsString(token);
-        redisTemplate.opsForValue().set(key, json, Duration.ofHours(24));
+        redisTemplate.opsForValue().set(key, token, Duration.ofHours(24));
     }
 
-    public String getToken(String id) throws AppException {
-        String key  = "access_token:" + id;
-        return (String)redisTemplate.opsForValue().get(key);
+    public String getToken(String id) {
+        String key = "access_token:" + id;
+        Object value = redisTemplate.opsForValue().get(key);
+        String x = value.toString();
+        return x.replaceAll("^\"|\"$", "");
     }
 
     public void deleteToken(String id){

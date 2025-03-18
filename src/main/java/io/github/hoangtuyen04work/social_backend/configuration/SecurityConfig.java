@@ -2,6 +2,7 @@ package io.github.hoangtuyen04work.social_backend.configuration;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
@@ -27,7 +28,8 @@ import javax.crypto.spec.SecretKeySpec;
 @EnableWebSecurity
 @EnableJpaAuditing
 public class SecurityConfig  {
-    private String SIGNED_KEY = "asdsfsd";
+    @Value("${jwt.signerKey}")
+    private String SIGNED_KEY;
     @Autowired
     CustomJwtDecoder customJwtDecoder;
     @Autowired
@@ -43,7 +45,11 @@ public class SecurityConfig  {
                 .csrf(AbstractHttpConfigurer::disable);
         httpSecurity
                 .authorizeHttpRequests(request ->
-                        request.requestMatchers("/home").permitAll()
+                        request.requestMatchers("/login").permitAll()
+                                .requestMatchers("/signup").permitAll()
+                                .requestMatchers("/authentication").permitAll()
+                                .requestMatchers("/logoutt").permitAll()
+                                .requestMatchers("/refresh").permitAll()
                                 .anyRequest()
                                 .authenticated());
         return httpSecurity.build();
@@ -72,5 +78,4 @@ public class SecurityConfig  {
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(10);
     }
-//
 }

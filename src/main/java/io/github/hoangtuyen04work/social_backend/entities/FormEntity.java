@@ -14,14 +14,14 @@ import java.time.Instant;
 @MappedSuperclass
 @Getter
 @Setter
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @EntityListeners(AuditingEntityListener.class)
 public class FormEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     String id;
-
 
     @CreatedDate
     @Column(updatable = false)
@@ -34,5 +34,5 @@ public class FormEntity {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    State state;
+    State state = State.CREATED;;
 }

@@ -12,13 +12,14 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "users")
 public class UserEntity extends FormEntity{
     @Column(nullable = false)
-    String userId;
+    String customId;
     @Column(nullable = false)
     String userName;
     @Column(nullable = false)
@@ -28,6 +29,9 @@ public class UserEntity extends FormEntity{
     String bio;
     Date dob;
     String address;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    RefreshTokenEntity refreshToken;
 
     @OneToMany(mappedBy = "user1", fetch = FetchType.LAZY, cascade = CascadeType.ALL,  orphanRemoval = true)
     Set<FriendshipEntity> sendFriendRequests;
@@ -43,9 +47,6 @@ public class UserEntity extends FormEntity{
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     Set<MessageEntity> messages;
-
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    Set<RefreshTokenEntity> refreshTokens;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     Set<PostReactionEntity> postReactions;
