@@ -49,10 +49,10 @@ public class ApplicationInitConfig {
                 roleRepo.save(user);
                 roles.add(user);
             }
-            if(!userRepo.existsByUserId("ADMIN")){
+            if(!userRepo.existsByCustomId("ADMIN")){
                 UserEntity user = UserEntity
                                 .builder()
-                                .userId("ADMIN")
+                                .customId("ADMIN")
                                 .userName("ADMIN")
                                 .password(passwordEncoder.encode("ADMIN"))
                                 .build();

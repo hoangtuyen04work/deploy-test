@@ -1,5 +1,6 @@
 package io.github.hoangtuyen04work.social_backend.utils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
@@ -9,8 +10,14 @@ import io.github.hoangtuyen04work.social_backend.entities.RoleEntity;
 import io.github.hoangtuyen04work.social_backend.entities.UserEntity;
 import io.github.hoangtuyen04work.social_backend.exception.AppException;
 import io.github.hoangtuyen04work.social_backend.exception.ErrorCode;
+import io.github.hoangtuyen04work.social_backend.services.RefreshTokenService;
+import io.github.hoangtuyen04work.social_backend.services.UserService;
+import io.github.hoangtuyen04work.social_backend.services.redis.TokenRedisService;
 import lombok.RequiredArgsConstructor;
-import com.nimbusds.jwt.SignedJWT;import org.springframework.stereotype.Component;
+import com.nimbusds.jwt.SignedJWT;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
 import java.time.Instant;
@@ -20,17 +27,69 @@ import java.util.*;
 @Component
 @RequiredArgsConstructor
 public class TokenUtils {
+    @Value("${jwt.signerKey}")
     private String SIGNER_KEY;
 
-    //Check token valid
-    public void isValidToken(String token) throws JOSEException, ParseException, AppException {
+    @Autowired
+    private TokenRedisService redis;
+
+    @Autowired
+    private RefreshTokenService refreshTokenService;
+
+    public String getUserIdByToken(String token) throws ParseException {
+        SignedJWT signedJWT;
+        try {
+            signedJWT = SignedJWT.parse(token);
+        } catch (ParseException e) {
+            return null;
+        }
+        return signedJWT.getJWTClaimsSet().getSubject();
+    }
+
+    public boolean removeToken(String token) throws ParseException {
+        SignedJWT signedJWT;
+        try {
+            signedJWT = SignedJWT.parse(token);
+        } catch (ParseException e) {
+            return false;
+        }
+        String id = signedJWT.getJWTClaimsSet().getSubject();
+        refreshTokenService.deleteRefreshTokenByUserId(id);
+        redis.deleteToken(id);
+        return true;
+    }
+
+    public void isValidToken(String token) throws AppException, ParseException, JOSEException {
+            JWSVerifier verifier = new MACVerifier(SIGNER_KEY.getBytes());
+            SignedJWT signedJWT;
+            try {
+                signedJWT = SignedJWT.parse(token);
+            } catch (ParseException e) {
+                throw e;
+            }
+            String id = signedJWT.getJWTClaimsSet().getSubject();
+            String tokenRedis = redis.getToken(id);
+            if(tokenRedis == null)
+                throw new AppException(ErrorCode.NOT_AUTHENTICATION);
+            else if(!tokenRedis.equals(token))
+                throw new AppException(ErrorCode.NOT_AUTHENTICATION);
+            Date expiryTime = signedJWT.getJWTClaimsSet().getExpirationTime();
+            boolean verified = signedJWT.verify(verifier);
+            if(!(verified && expiryTime.after(new Date()))){
+                throw new AppException(ErrorCode.NOT_AUTHENTICATION);
+            }
+    }
+
+    public boolean checkToken(String token) throws JOSEException, ParseException {
         JWSVerifier verifier = new MACVerifier(SIGNER_KEY.getBytes());
         SignedJWT signedJWT = SignedJWT.parse(token);
+        String id = signedJWT.getJWTClaimsSet().getSubject();
+        String tokenRedis = redis.getToken(id);
+        if(tokenRedis.isEmpty()) return false;
+        else if(!tokenRedis.equals(token)) return false;
         Date expiryTime = signedJWT.getJWTClaimsSet().getExpirationTime();
         boolean verified = signedJWT.verify(verifier);
-        if(!(verified && expiryTime.after(new Date()))){
-            throw new AppException(ErrorCode.NOT_AUTHENTICATION);
-        }
+        return verified && expiryTime.after(new Date());
     }
 
     //Generate token
@@ -42,7 +101,7 @@ public class TokenUtils {
                     .issuer("hoangtuyen.com")
                     .subject(user.getId())
                     .issueTime(new Date())
-                    .expirationTime(Date.from(Instant.now().plus(48*60*60, ChronoUnit.SECONDS)))
+                    .expirationTime(Date.from(Instant.now().plus(24*60*60, ChronoUnit.SECONDS)))
                     .jwtID(UUID.randomUUID().toString())
                     .claim("roles",buildRoles(user.getRoles()))
                     .build();
@@ -52,7 +111,7 @@ public class TokenUtils {
                     .issuer("hoangtuyen.com")
                     .subject(user.getId())
                     .issueTime(new Date())
-                    .expirationTime(Date.from(Instant.now().plus(48*60*60, ChronoUnit.SECONDS)))
+                    .expirationTime(Date.from(Instant.now().plus(24*60*60, ChronoUnit.SECONDS)))
                     .jwtID(UUID.randomUUID().toString())
                     .claim("roles",buildRoles(user.getRoles()))
                     .claim("authorities", buildAuthorities(user.getRoles()))
@@ -60,7 +119,9 @@ public class TokenUtils {
         }
         JWSObject jwsObject = new JWSObject(jwsHeader, new Payload(jwtClaimsSet.toJSONObject()));
         jwsObject.sign(new MACSigner(SIGNER_KEY.getBytes()));
-        return jwsObject.serialize();
+        String token =  jwsObject.serialize();
+        redis.saveToken(user.getId(), token);
+        return token;
     }
 
     //build list Roles for claim roles

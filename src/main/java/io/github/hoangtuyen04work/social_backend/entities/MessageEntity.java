@@ -9,7 +9,8 @@ import lombok.experimental.FieldDefaults;
 @Entity
 @Getter
 @Setter
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "messages")
 public class MessageEntity extends FormEntity {
