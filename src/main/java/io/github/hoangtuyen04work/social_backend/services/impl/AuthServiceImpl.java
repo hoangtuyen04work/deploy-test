@@ -2,6 +2,7 @@ package io.github.hoangtuyen04work.social_backend.services.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.nimbusds.jose.JOSEException;
+import io.github.hoangtuyen04work.social_backend.dto.request.ChangePasswordRequest;
 import io.github.hoangtuyen04work.social_backend.dto.request.UserCreationRequest;
 import io.github.hoangtuyen04work.social_backend.dto.request.UserLoginRequest;
 import io.github.hoangtuyen04work.social_backend.dto.response.AuthResponse;
@@ -16,6 +17,7 @@ import io.github.hoangtuyen04work.social_backend.utils.TokenUtils;
 import io.github.hoangtuyen04work.social_backend.utils.UserMapping;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
@@ -35,6 +37,16 @@ public class AuthServiceImpl implements AuthService {
 
     @Autowired
     private UserService userService;
+
+
+//    @Override
+//    public AuthResponse changePassword(ChangePasswordRequest request){
+//        return AuthResponse.builder()
+//                .user(userMapping.toUserResponse(userEntity))
+//                .token(tokenUtils.generateToken(userEntity))
+//                .refreshToken(refreshTokenService.createRefreshTokenEntity(userEntity).getRefreshToken())
+//                .build();
+//    }
 
     @Override
     public AuthResponse refreshToken(String refreshToken) throws AppException, JOSEException {

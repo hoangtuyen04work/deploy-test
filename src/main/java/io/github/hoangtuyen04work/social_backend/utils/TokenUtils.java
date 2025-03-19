@@ -13,6 +13,7 @@ import io.github.hoangtuyen04work.social_backend.exception.ErrorCode;
 import io.github.hoangtuyen04work.social_backend.services.RefreshTokenService;
 import io.github.hoangtuyen04work.social_backend.services.UserService;
 import io.github.hoangtuyen04work.social_backend.services.redis.TokenRedisService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import com.nimbusds.jwt.SignedJWT;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,14 @@ public class TokenUtils {
 
     @Autowired
     private RefreshTokenService refreshTokenService;
+
+    public String getTokenFromRequest(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
+        }
+        return null;
+    }
 
     public String getUserIdByToken(String token) throws ParseException {
         SignedJWT signedJWT;
@@ -104,6 +113,7 @@ public class TokenUtils {
                     .expirationTime(Date.from(Instant.now().plus(24*60*60, ChronoUnit.SECONDS)))
                     .jwtID(UUID.randomUUID().toString())
                     .claim("roles",buildRoles(user.getRoles()))
+                    .claim("scope", List.of("HEHE"))
                     .build();
         }
         else{
@@ -114,7 +124,7 @@ public class TokenUtils {
                     .expirationTime(Date.from(Instant.now().plus(24*60*60, ChronoUnit.SECONDS)))
                     .jwtID(UUID.randomUUID().toString())
                     .claim("roles",buildRoles(user.getRoles()))
-                    .claim("authorities", buildAuthorities(user.getRoles()))
+                    .claim("scope", buildAuthorities(user.getRoles()))
                     .build();
         }
         JWSObject jwsObject = new JWSObject(jwsHeader, new Payload(jwtClaimsSet.toJSONObject()));
