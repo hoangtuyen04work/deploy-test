@@ -2,7 +2,6 @@ package io.github.hoangtuyen04work.social_backend.configuration;
 
 import com.nimbusds.jose.JOSEException;
 import io.github.hoangtuyen04work.social_backend.exception.AppException;
-import io.github.hoangtuyen04work.social_backend.exception.ErrorCode;
 import io.github.hoangtuyen04work.social_backend.utils.TokenUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -42,6 +41,7 @@ public class CustomJwtDecoder implements JwtDecoder {
                     .macAlgorithm(MacAlgorithm.HS512)
                     .build();
         }
+
         return nimbusJwtDecoder.decode(token);
     }
 }

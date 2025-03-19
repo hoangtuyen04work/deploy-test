@@ -3,14 +3,17 @@ package io.github.hoangtuyen04work.social_backend.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.nimbusds.jose.JOSEException;
 import io.github.hoangtuyen04work.social_backend.dto.ApiResponse;
+import io.github.hoangtuyen04work.social_backend.dto.request.ChangePasswordRequest;
 import io.github.hoangtuyen04work.social_backend.dto.request.UserCreationRequest;
 import io.github.hoangtuyen04work.social_backend.dto.request.UserLoginRequest;
 import io.github.hoangtuyen04work.social_backend.dto.response.AuthResponse;
+import io.github.hoangtuyen04work.social_backend.entities.Authority;
 import io.github.hoangtuyen04work.social_backend.exception.AppException;
 import io.github.hoangtuyen04work.social_backend.services.AuthService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
@@ -20,6 +23,15 @@ import java.text.ParseException;
 public class AuthController {
     @Autowired
     private AuthService authService;
+
+    @PutMapping("/changepassword")
+    public ApiResponse<AuthResponse> changePassword(@RequestBody ChangePasswordRequest request) throws AppException, JOSEException, JsonProcessingException {
+        Authentication a = SecurityContextHolder.getContext().getAuthentication();
+        return null;
+        //        return ApiResponse.<AuthResponse>builder()
+//                .data(authService.changePassword(request))
+//                .build();
+    }
 
     @PostMapping("/signup")
     public ApiResponse<AuthResponse> signup(@RequestBody UserCreationRequest request) throws AppException, JOSEException, JsonProcessingException {
