@@ -3,6 +3,7 @@ import io.github.hoangtuyen04work.social_backend.entities.FriendshipEntity;
 import io.github.hoangtuyen04work.social_backend.entities.UserEntity;
 import io.github.hoangtuyen04work.social_backend.enums.Friendship;
 import io.github.hoangtuyen04work.social_backend.exception.AppException;
+import io.github.hoangtuyen04work.social_backend.exception.ErrorCode;
 import io.github.hoangtuyen04work.social_backend.repositories.FriendshipRepo;
 import io.github.hoangtuyen04work.social_backend.services.FriendshipService;
 import io.github.hoangtuyen04work.social_backend.services.UserService;
@@ -35,18 +36,22 @@ public class FriendshipServiceImpl implements FriendshipService {
         }
         else if(flag == 2){
             if(!isFriend(user.getId(), friendId, 2)) return false;
-            FriendshipEntity friendship =
+            FriendshipEntity friendship = findByUserIdAndFriendId(user.getId(), friendId);
+            friendship.setFriendship(Friendship.ACCEPTED);
             repo.save(friendship);
         }
         else{
-            FriendshipEntity friendship = FriendshipEntity.builder()
-                    .user1(user)
-                    .user2(friend)
-                    .friendship(Friendship.ACCEPTED)
-                    .build();
-            repo.save(friendship);
+            FriendshipEntity friendship = findByUserIdAndFriendId(user.getId(), friendId);
+            repo.delete(friendship);
         }
         return true;
+    }
+
+    @Override
+    public FriendshipEntity findByUserIdAndFriendId(String userId, String friendId) throws AppException {
+        return repo.findByUserIdAndFriendId(userId, friendId)
+                .orElse(repo.findByUserIdAndFriendId(friendId, userId)
+                        .orElseThrow(() -> new AppException(ErrorCode.CONFLICT)));
     }
 
     @Override
