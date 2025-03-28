@@ -14,8 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 @Service
@@ -29,11 +27,19 @@ public class FriendshipServiceImpl implements FriendshipService {
     private UserMapping userMapping;
 
     @Override
-    public Set<UserSummaryResponse> getMyFriend() throws AppException {
-        List<UserSummaryResponse> myFriends = new ArrayList<>();
+    public Set<UserEntity> getMyFriend2()   {
         String myId = SecurityContextHolder.getContext().getAuthentication().getName();
-        Set<UserEntity> friend = repo.findByUser1Id(myId).get();
-        friend.addAll(repo.findByUser1Id(myId).get());
+        Set<UserEntity> friend = repo.findByUser1IdAndFriendship(myId, Friendship.ACCEPTED).get();
+        friend.addAll(repo.findByUser2IdAndFriendship(myId, Friendship.ACCEPTED).get());
+        return friend;
+    }
+
+
+    @Override
+    public Set<UserSummaryResponse> getMyFriend()   {
+        String myId = SecurityContextHolder.getContext().getAuthentication().getName();
+        Set<UserEntity> friend = repo.findByUser1IdAndFriendship(myId, Friendship.ACCEPTED).get();
+        friend.addAll(repo.findByUser2IdAndFriendship(myId, Friendship.ACCEPTED).get());
         return userMapping.toUserSummaryResponses(friend);
     }
 

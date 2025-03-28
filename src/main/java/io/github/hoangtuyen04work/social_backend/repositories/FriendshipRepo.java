@@ -22,9 +22,11 @@ public interface FriendshipRepo extends JpaRepository<FriendshipEntity, String> 
             "WHERE f.user1.id = :userId AND f.user2.id = :friendId")
     Optional<FriendshipEntity> findByUserIdAndFriendId(@Param("userId") String userId,
                                                        @Param("friendId") String friendId);
-    @Query("SELECT f.user1 FROM FriendshipEntity  f WHERE f.user2.id = :id")
-    Optional<Set<UserEntity>> findByUser2Id(@Param("id") String id);
-    @Query("SELECT f.user2 FROM FriendshipEntity f WHERE f.user1.id = :id")
-    Optional<Set<UserEntity>> findByUser1Id(@Param("id") String id);
+    @Query("SELECT f.user1 FROM FriendshipEntity f WHERE f.user2.id = :id AND f.friendship = :friendship")
+    Optional<Set<UserEntity>> findByUser2IdAndFriendship(@Param("id") String id
+            , @Param("friendship")Friendship friendShip);
+    @Query("SELECT f.user2 FROM FriendshipEntity f WHERE f.user1.id = :id AND f.friendship = :friendship")
+    Optional<Set<UserEntity>> findByUser1IdAndFriendship(@Param("id") String id
+            , @Param("friendship")Friendship friendShip);
 
 }
