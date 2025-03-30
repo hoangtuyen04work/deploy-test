@@ -10,6 +10,8 @@ import java.util.Set;
 public interface FriendshipService {
     Set<UserEntity> getMyFriend2();
 
+    Set<UserSummaryResponse> getAllPending();
+
     Set<UserSummaryResponse> getMyFriend() throws AppException;
 
     //flag = 1 -> add ; flag = 2 -> accept; flag = 3 delete
