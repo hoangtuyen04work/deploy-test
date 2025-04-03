@@ -36,8 +36,13 @@ public class ConversationController {
                             @DestinationVariable String conversationId) throws AppException {
         MessageResponse response = messageService.sendMessage(request);
         for(String receiverId : request.getReceiverId()){
-            simpMessagingTemplate.convertAndSendToUser(receiverId, "/queue/conversation/messages/" + conversationId, response);
+            simpMessagingTemplate.convertAndSendToUser(receiverId, "/queue/conversation/messages/" + conversationId , response);
         }
+    }
+
+    @MessageMapping("/test")
+    public void test() throws AppException {
+            simpMessagingTemplate.convertAndSend( "/topic/ok" , "Hello");
     }
 
     @DeleteMapping("/conversation")
