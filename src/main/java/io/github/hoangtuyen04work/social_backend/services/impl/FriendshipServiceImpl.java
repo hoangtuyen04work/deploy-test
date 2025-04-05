@@ -71,6 +71,7 @@ public class FriendshipServiceImpl implements FriendshipService {
                 )).collect(Collectors.toSet());
         return ok;
     }
+
     private Instant toInstant(Object obj) {
         if (obj instanceof Instant) {
             return (Instant) obj;

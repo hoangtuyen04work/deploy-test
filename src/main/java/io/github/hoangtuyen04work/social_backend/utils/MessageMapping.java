@@ -16,6 +16,7 @@ public class MessageMapping {
     }
     public MessageResponse toMessageResponse(MessageEntity message){
         return MessageResponse.builder()
+                .conversationId(message.getConversation().getId())
                 .content(message.getContent())
                 .imageLink(message.getImageLink())
                 .sendAt(message.getCreationDate())
