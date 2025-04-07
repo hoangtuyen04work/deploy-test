@@ -3,6 +3,8 @@ package io.github.hoangtuyen04work.social_backend.repositories;
 import io.github.hoangtuyen04work.social_backend.entities.FriendshipEntity;
 import io.github.hoangtuyen04work.social_backend.entities.UserEntity;
 import io.github.hoangtuyen04work.social_backend.enums.Friendship;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -21,6 +23,7 @@ public interface FriendshipRepo extends JpaRepository<FriendshipEntity, String> 
     boolean existsBySenderIdAndReceiverIdAndFriendship(@Param("sender") String sender,
                                                    @Param("receiver") String receiver,
                                                    @Param("friendship") Friendship friendship);
+
     @Query(value = "SELECT  f FROM FriendshipEntity f " +
             "WHERE f.sender.id = :sender AND f.receiver.id = :receiver")
     Optional<FriendshipEntity> findBySenderIdAndReceiverId(@Param("sender") String sender,
@@ -39,27 +42,20 @@ public interface FriendshipRepo extends JpaRepository<FriendshipEntity, String> 
     Optional<Set<UserEntity>> findBySenderIdAndFriendship(@Param("id") String id
             , @Param("friendship")Friendship friendShip);
 
-//    @Query(value = "SELECT u.id, u.custom_id, u.user_name, u.image_link, c.id, m.content, m.creation_date, m.user_id " +
-//            "FROM users u " +
-//            "JOIN friendship f " +
-//                "ON (f.sender = :userId AND f.receiver = u.id AND f.friendship = 'ACCEPTED') " +
-//                "OR (f.receiver = :userId AND f.sender = u.id AND f.friendship = 'ACCEPTED') " +
-//            "JOIN conversations c " +
-//                "ON (u.id = c.user1_id AND c.user2_id = :userId) " +
-//                "OR (u.id = c.user2_id AND c.user1_id = :userId) " +
-//            "JOIN (" +
-//                "SELECT m.id,  k.id as conversation_id, MAX(m.creation_date) AS creation_date, m.content, m.user_id " +
-//                "FROM  messages m " +
-//                "RIGHT JOIN " +
-//                    "(SELECT c.id " +
-//                    "FROM conversations c " +
-//                    "WHERE c.user1_id = :userId OR c.user2_id = :userId) k " +
-//                    "ON k.id = m.conversation_id " +
-//                "GROUP BY m.conversation_id ) m " +
-//                "ON m.conversation_id = c.id " +
-//            "WHERE u.id != :userId " +
-//            "ORDER BY m.creation_date DESC", nativeQuery = true)
+    //Get all  received aff friend request by id;
+    @Query("SELECT f.receiver FROM FriendshipEntity f WHERE f.sender.id = :id AND f.friendship = 'PENDING'")
+    Page<UserEntity> findAllSendRequest(@Param("id") String id, Pageable pageable);
 
+    //Get all  received aff friend request by id;
+    @Query("SELECT f.sender FROM FriendshipEntity f WHERE f.receiver.id = :id AND f.friendship = 'PENDING'")
+    Page<UserEntity> findAllAddFriendRequest(@Param("id") String id, Pageable pageable);
+
+    //Get all  received aff friend request by id;
+    @Query("SELECT f.sender FROM FriendshipEntity f WHERE f.receiver.id = :id AND f.friendship = 'ACCEPTED'")
+    Page<UserEntity> findAllAcceptedFriend1(@Param("id") String id, Pageable pageable);
+
+    @Query("SELECT f.receiver FROM FriendshipEntity f WHERE f.sender.id = :id AND f.friendship = 'ACCEPTED'")
+    Page<UserEntity> findAllAcceptedFriend2(@Param("id") String id, Pageable pageable);
 
     @Query(value = "SELECT \n" +
             "    u.id AS user_id,\n" +
